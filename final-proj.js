@@ -1,5 +1,8 @@
 // Make edits here
 const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
+const portNumber = process.argv[2];
 const readline = require('readline');
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, 'credentials/.env') })
@@ -13,9 +16,8 @@ app.set("views", path.resolve(__dirname, 'pages'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Start server and CLI interpreter
-const PORT = args[0];
-app.listen(PORT, () => {
-    console.log(`Web server started and running at http://localhost:${PORT}`);
+app.listen(portNumber, () => {
+    console.log(`Web server started and running at http://localhost:${portNumber}`);
     rl.prompt();
 });
 
