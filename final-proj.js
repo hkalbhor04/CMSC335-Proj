@@ -42,9 +42,9 @@ rl.on('line', (input) => {
 });
 
 app.get('/', (request, response) => {
-    response.render("intro", { title: "Baby Zillow" });
+    response.render("intro");
 });
 
 app.get('/checkValue', (request, response) => {
-    response.render("checkValue", { portNumber: portNumber });
+    response.render("checkValue");
 });
