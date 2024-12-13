@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<title>Baby Zillow</title>
+</head>
+
+<body>
+	<h1>Home values</h1>
+
+    <button> Search History </button>
+
+    <form action="http://localhost:<%- portNumber %>/processApplication" method="post" onsubmit="confirmSubmission(event)">
+		<fieldset>
+			<label>Address: <input type="text" name="address"/></label>
+			<label>Property Type: <select type="email" name="propertyType"></label>
+		</fieldset>
+
+		<br>
+        
+		<input type="reset" />
+		<input type="submit" value="Submit Application"/>
+	</form>
+    
+</body>
+
+</html>
