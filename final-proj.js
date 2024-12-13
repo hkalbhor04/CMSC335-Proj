@@ -14,7 +14,7 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 app.set('view engine', 'ejs');
 app.set("views", path.resolve(__dirname, 'pages'));
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, '/CMSC335-Proj')));
+app.use(express.static("CMSC335-Proj"));
 
 // Start server and CLI interpreter
 app.listen(portNumber, () => {
