@@ -12,6 +12,33 @@ app.set('view engine', 'ejs');
 app.set("views", path.resolve(__dirname, 'pages'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Start server and CLI interpreter
+const PORT = args[0];
+app.listen(PORT, () => {
+    console.log(`Web server started and running at http://localhost:${PORT}`);
+    rl.prompt();
+});
+
+// Setup readline interface for command line interpreter
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  prompt: 'Stop to shutdown the server: '
+});
+
+// Listen for user input
+rl.on('line', (input) => {
+    input = input.trim();
+    
+    if (input === 'stop') {
+      console.log("Shutting down the server");
+      rl.close();
+      process.exit(0);
+    } else {
+      console.log(`Invalid command: ${input}`);
+    }
+});
+
 app.get('/', (request, response) => {
     response.render("intro", { title: "Baby Zillow" });
 });
