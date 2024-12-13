@@ -6,7 +6,6 @@ const portNumber = process.argv[2];
 const readline = require('readline');
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, 'credentials/.env') })
-app.use(express.static(path.join(__dirname, 'CMSC335-Proj')));
 
 const uri = `mongodb+srv://${process.env.MONGO_DB_USERNAME}:${process.env.MONGO_DB_PASSWORD}@cluster0.t50t9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 const dbAndCollection = {db:process.env.MONGO_DB_NAME, collection:process.env.MONGO_COLLECTION};
@@ -15,6 +14,7 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 app.set('view engine', 'ejs');
 app.set("views", path.resolve(__dirname, 'pages'));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, '/CMSC335-Proj')));
 
 // Start server and CLI interpreter
 app.listen(portNumber, () => {
