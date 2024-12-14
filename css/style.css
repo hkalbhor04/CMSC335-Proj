@@ -4,15 +4,13 @@ html {
 
 h1 {
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    color: rgb(127, 34, 34);
+    color: rgb(126, 68, 37);
+    display: inline-block;
+    font-size: 50px;
 }
 
 #title-container {
-    border-color: rgb(101, 24, 24);
-    border-width: 4px;
-    border-style: solid;
-    border-radius: 15px;
-    background-color: rgb(201, 215, 238);
+    
     width: fit-content;
     height: fit-content;
     padding-left: 40px;
@@ -21,4 +19,42 @@ h1 {
     margin-left: auto;
     margin-right: auto;
     order: 0;
+}
+
+img {
+    width: 50px;
+    display: inline;
+    margin-top: 10px;
+    margin-left: 5px;
+}
+
+h2 {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    color: rgb(127, 59, 34);
+    display: inline-block;
+}
+
+a {
+    text-decoration: none;
+    color: rgb(126, 68, 37);
+}
+
+#body-container {
+    border-color: rgb(127, 59, 34);
+    border-width: 3px;
+    border-style: solid;
+    border-radius: 4px;
+    background-color: rgb(224, 230, 243);
+    width: fit-content;
+    height: fit-content;
+    padding-left: 40px;
+    padding-right: 40px;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    order: 0;
+}
+
+#body-container:hover {
+    background-color: rgba(224, 230, 243, 0.453);
 }
