@@ -52,7 +52,25 @@ app.get('/checkValue', (request, response) => {
 });
 
 // Handle form submission and query Zillow API
-app.post('/checkValue', (req, res) => {
+app.post('/processValue', async (req, res) => {
+  //insert the entry into mongo database
+  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+    try {
+        await client.connect();
+        const applicationData = {
+            address: req.body.address,
+            propertyType: req.body.propertyType,
+            beds: req.body.beds,
+            baths: req.body.baths,
+            sqftMin: req.body.sqftMin, 
+            sqftMax: req.body.sqftMax, 
+        };
+        await client.db(dbAndCollection.db).collection(dbAndCollection.collection).insertOne(applicationData);
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
     const { address, propertyType, beds, baths, sqftMin, sqftMax } = req.body;
 
     if (!address || !propertyType) {
