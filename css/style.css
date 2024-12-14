@@ -1,9 +1,14 @@
+html {
+    background-color: rgb(201, 215, 238);
+}
+
 h1 {
-    color: red;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    color: rgb(127, 34, 34);
 }
 
 #title-container {
-    border-color: rgb(11, 24, 47);
+    border-color: rgb(101, 24, 24);
     border-width: 4px;
     border-style: solid;
     border-radius: 15px;
@@ -12,8 +17,6 @@ h1 {
     height: fit-content;
     padding-left: 40px;
     padding-right: 40px;
-    padding-top: 1px;
-    padding-bottom: 10px;
     margin-top: 70px;
     margin-left: auto;
     margin-right: auto;
