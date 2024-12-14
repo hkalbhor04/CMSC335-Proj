@@ -4,29 +4,35 @@
 <head>
 	<meta charset="utf-8" />
 	<title>Baby Zillow</title>
+	<link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
-	<h1>Home values</h1>
-
+	<div class="title-container">
+		<h1 id="title">Home Values</h1>
+	</div>
+	<div id="form-container">
+	<br>
     <button> Search History </button>
-
+	<br><br>
     <form action="/processApplication" method="post" onsubmit="confirmSubmission(event)">
 		<fieldset>
-			<label>Address: <input type="text" name="address"/></label><br>
-			<label>Property Type: <input type="email" name="propertyType"></label><br>
-			<label>Number of Beds: <input type="text" id="beds" name="beds"></label><br>
-			<label>Number of Baths: <input type="number" id="baths" name="baths"></label><br>
-			<label>Min Sqft: <input type="number" id="sqftMin" name="sqftMin"></label><br>
+			<br>
+			<label>Address: <input type="text" name="address"/></label><br><br>
+			<label>Property Type: <input name="propertyType"></label><br><br>
+			<label>Number of Beds: <input type="text" id="beds" name="beds"></label><br><br>
+			<label>Number of Baths: <input type="number" id="baths" name="baths"></label><br><br>
+			<label>Min Sqft: <input type="number" id="sqftMin" name="sqftMin"></label><br><br>
 			<label>Max Sqft: <input type="number" id="sqftMax" name="sqftMax"></label>
+			<br>
+			<br>
 		</fieldset>
 
 		<br>
-        
 		<input type="reset" />
 		<input type="submit" value="Submit Application"/>
 	</form>
-    
+</div>
 </body>
 
 </html>
