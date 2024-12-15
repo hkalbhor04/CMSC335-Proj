@@ -91,6 +91,22 @@ app.post("/searchHistory", async (request, response) => {
   }
 });
 
+app.post("/clearSearchHistory", async (request, response) => {
+  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+  try {
+      await client.connect();
+      const result = await client.db(dbAndCollection.db)
+          .collection(dbAndCollection.collection)
+          .deleteMany({});
+      const table = await createTable(client, dbAndCollection);
+      response.render("searchHistory", { table: table });
+  } catch (e) {
+      console.error(e);
+  } finally {
+      await client.close();
+  }
+});
+
 app.get('/checkValue', (request, response) => {
     response.render("checkValue");
 });

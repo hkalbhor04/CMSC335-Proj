@@ -11,11 +11,13 @@
     <div class="title-container">
         <h1>Search History</h1>
     </div>
-	
-    <div id="body-container">
-        <%- items %>
-    </div>
+    <%- table %>
 
-</body>
+    <div id="button1">
+        <form action="/clearSearchHistory" method="post">
+            <button id="clear"> Clear Search History </button>
+        </form>
+    </div>
+</body> 
 
 </html>
