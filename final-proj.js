@@ -8,7 +8,8 @@ const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, 'credentials/.env') })
 app.use('/css', express.static(path.join(__dirname, 'css')));
 
-const uri = `mongodb+srv://${process.env.MONGO_DB_USERNAME}:${process.env.MONGO_DB_PASSWORD}@cluster0.t50t9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+const uri = process.env.MONGO_CONNECTION_STRING;
+//const uri = `mongodb+srv://${process.env.MONGO_DB_USERNAME}:${process.env.MONGO_DB_PASSWORD}@cluster0.t50t9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 const dbAndCollection = {db:process.env.MONGO_DB_NAME, collection:process.env.MONGO_COLLECTION};
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
@@ -47,6 +48,49 @@ app.get('/', (request, response) => {
     response.render("intro");
 });
 
+async function lookUpMany(client, databaseAndCollection) {
+  const cursor = client.db(databaseAndCollection.db)
+      .collection(databaseAndCollection.collection)
+      .find({});
+  return await cursor.toArray();
+}
+
+async function createTable(client, databaseAndCollection) {
+  const result = await lookUpMany(client, databaseAndCollection);
+
+  let table = `<table border=1>
+                  <tr>
+                      <th>Address</th>
+                      <th>Property Type</th>`;
+
+  result.forEach(result => {
+      table += `
+          <tr>
+              <td>${result.address || "N/A"}</td>
+              <td>${result.propertyType || "N/A"}</td>
+          </tr>
+      `;
+  });
+
+  table+="</table>"
+
+  return table;
+}
+
+app.post("/searchHistory", async (request, response) => {
+  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+  try {
+      await client.connect();
+      const table = await createTable(client, dbAndCollection);
+      response.render("searchHistory", { table: table });
+     
+  } catch (e) {
+      console.error(e);
+  } finally {
+      await client.close();
+  }
+});
+
 app.get('/checkValue', (request, response) => {
     response.render("checkValue");
 });
@@ -54,6 +98,7 @@ app.get('/checkValue', (request, response) => {
 // Handle form submission and query Zillow API
 app.post('/processValue', async (req, res) => {
   //insert the entry into mongo database
+  //note: this code can be moved around this call, whatever is most convienent for you!
   const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
     try {
         await client.connect();
@@ -63,9 +108,11 @@ app.post('/processValue', async (req, res) => {
             beds: req.body.beds,
             baths: req.body.baths,
             sqftMin: req.body.sqftMin, 
-            sqftMax: req.body.sqftMax, 
+            sqftMax: req.body.sqftMax,
+            //api data would be added here 
         };
         await client.db(dbAndCollection.db).collection(dbAndCollection.collection).insertOne(applicationData);
+        res.render("results", { applicationData });
     } catch (e) {
         console.error(e);
     } finally {

@@ -13,13 +13,15 @@
 	</div>
 	<div id="form-container">
 	<br>
-    <button> Search History </button>
+	<form action="/searchHistory" method="post">
+    	<button> Search History </button>
+	</form>
 	<br><br>
-    <form action="/processValue" method="post" onsubmit="confirmSubmission(event)">
+    <form action="/processValue" method="post">
 		<fieldset>
 			<br>
-			<label>Address* : <input type="text" name="address"/></label><br><br>
-			<label>Property Type* : </label>
+			<label>Address: <input type="text" name="address"/></label><br><br>
+			<label>Property Type: </label>
 			<select name="propertyType" id="propertyType">
 				<option value="SingleFamily">SingleFamily</option>
 				<option value="Condo">Condo</option>
@@ -32,8 +34,7 @@
 			<label>Number of Baths: <input type="number" id="baths" name="baths"></label><br><br>
 			<label>Min Sqft: <input type="number" id="sqftMin" name="sqftMin"></label><br><br>
 			<label>Max Sqft: <input type="number" id="sqftMax" name="sqftMax"></label>
-			<br>
-			<p> * fields are required </p>
+			<br><br>
 		</fieldset>
 		<br>
 		<input type="reset" />
