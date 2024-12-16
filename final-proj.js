@@ -3,7 +3,6 @@ const express = require('express');
 const https = require('https');
 const app = express();
 const bodyParser = require('body-parser');
-// const readline = require('readline');
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, 'credentials/.env') })
 app.use('/css', express.static(path.join(__dirname, 'css')));
@@ -22,26 +21,6 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
-
-// // Setup readline interface for command line interpreter
-// const rl = readline.createInterface({
-//   input: process.stdin,
-//   output: process.stdout,
-//   prompt: 'Stop to shutdown the server: '
-// });
-
-// // Listen for user input
-// rl.on('line', (input) => {
-//     input = input.trim();
-    
-//     if (input === 'stop') {
-//       console.log("Shutting down the server");
-//       rl.close();
-//       process.exit(0);
-//     } else {
-//       console.log(`Invalid command: ${input}`);
-//     }
-// });
 
 app.get('/', (request, response) => {
     response.render("intro");
