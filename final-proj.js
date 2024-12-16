@@ -3,12 +3,12 @@ const express = require('express');
 const https = require('https');
 const app = express();
 const bodyParser = require('body-parser');
+// const portNumber = process.argv[2];
 const readline = require('readline');
 const path = require("path");
-require("dotenv").config()
+require("dotenv").config({ path: path.resolve(__dirname, 'credentials/.env') })
 app.use('/css', express.static(path.join(__dirname, 'css')));
 app.set("views", path.resolve(__dirname, 'pages'));
-
 
 const uri = process.env.MONGO_CONNECTION_STRING;
 //const uri = `mongodb+srv://${process.env.MONGO_DB_USERNAME}:${process.env.MONGO_DB_PASSWORD}@cluster0.t50t9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -20,10 +20,9 @@ app.set("views", path.resolve(__dirname, 'pages'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("CMSC335-Proj"));
 
-// Start the server
-const portNumber = process.env.PORT || 3000;
-app.listen(portNumber, () => {
-    console.log(`Server running at http://localhost:${portNumber}`);
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
 
 // Setup readline interface for command line interpreter
