@@ -5,7 +5,11 @@
 
 **App Description:** Allow users to find the rent of a property after providing the address and property type.
 
-**YouTube Video Link:** 
+**YouTube Video Link:** https://youtu.be/h-RxES6Ik_o
+
+**Website Link:** https://cmsc335-finalproj-w2h1.onrender.com
+
+**Github Link:** https://github.com/hkalbhor04/CMSC335-Proj
 
 **APIs:** Zillow https://rapidapi.com/apimaker/api/zillow-com1
 
