@@ -2,8 +2,8 @@
 <html lang="en">
 
 <head>
-	<meta charset="utf-8" />
-	<title>Results</title>
+    <meta charset="utf-8" />
+    <title>Results</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
@@ -11,7 +11,7 @@
     <div class="title-container">
         <h1>Results</h1>
     </div>
-	
+    
     <div id="body-container">
         <p><strong>Address:</strong> <%= applicationData.address %></p>
         <p><strong>Property Type:</strong> <%= applicationData.propertyType %></p>
@@ -19,10 +19,13 @@
         <p><strong>Number of Baths:</strong> <%= applicationData.baths %></p>
         <p><strong>Minimum Sqft:</strong> <%= applicationData.sqftMin %></p>
         <p><strong>Maximum Sqft:</strong> <%= applicationData.sqftMax %></p>
-        <br>
-        <p><strong><u>Value!!!!</u></strong> </p>
+        <p><strong>Rent Estimate:</strong> <%= applicationData.rentEstimate %></p>
+        <p><strong>Median Rent:</strong> <%= applicationData.medianRent %></p>
+        <p><strong>High Rent:</strong> <%= applicationData.highRent %></p>
+        <p><strong>Low Rent:</strong> <%= applicationData.lowRent %></p>
+        <a href="/">Return to Home</a>
+        <br><br>
     </div>
-
 </body>
 
 </html>

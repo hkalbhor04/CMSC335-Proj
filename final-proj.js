@@ -1,5 +1,6 @@
 // Make edits here
 const express = require('express');
+const https = require('https');
 const app = express();
 const bodyParser = require('body-parser');
 const portNumber = process.argv[2];
@@ -111,75 +112,75 @@ app.get('/checkValue', (request, response) => {
     response.render("checkValue");
 });
 
-// Handle form submission and query Zillow API
+// Process form submission and get Zillow API data
 app.post('/processValue', async (req, res) => {
-  //insert the entry into mongo database
-  //note: this code can be moved around this call, whatever is most convienent for you!
-  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-    try {
-        await client.connect();
-        const applicationData = {
-            address: req.body.address,
-            propertyType: req.body.propertyType,
-            beds: req.body.beds,
-            baths: req.body.baths,
-            sqftMin: req.body.sqftMin, 
-            sqftMax: req.body.sqftMax,
-            //api data would be added here 
-        };
-        await client.db(dbAndCollection.db).collection(dbAndCollection.collection).insertOne(applicationData);
-        res.render("results", { applicationData });
-    } catch (e) {
-        console.error(e);
-    } finally {
-        await client.close();
-    }
+    const client = new MongoClient(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        serverApi: ServerApiVersion.v1,
+    });
+
     const { address, propertyType, beds, baths, sqftMin, sqftMax } = req.body;
 
-    if (!address || !propertyType) {
-        return res.render('form', { error: "Address and Property Type are mandatory!" });
-    }
+    // Encode the address for the URL
+    const encodedAddress = encodeURIComponent(address);
 
-    // Construct the API endpoint with query parameters
-    const queryAddress = encodeURIComponent(address);
-    const endpoint = `https://zillow-com1.p.rapidapi.com/rentEstimate?address=${queryAddress}&propertyType=${propertyType}`;
+    // Create the Zillow API path
+    const path = `/rentEstimate?address=${encodedAddress}&d=0.5&propertyType=${propertyType}`;
 
     const options = {
         method: 'GET',
+        hostname: 'zillow-com1.p.rapidapi.com',
+        port: null,
+        path: path,
         headers: {
+            'x-rapidapi-key': process.env.ZILLOW_API_KEY,
             'x-rapidapi-host': 'zillow-com1.p.rapidapi.com',
-            'x-rapidapi-key': process.env.ZILLOW_API_KEY
-        }
+        },
     };
 
-    // Make the API call
-    https.get(endpoint, options, (apiRes) => {
-        let data = '';
+    try {
+        // Connect to MongoDB
+        await client.connect();
 
-        // Accumulate data chunks
-        apiRes.on('data', (chunk) => {
-            data += chunk;
+        // Make the Zillow API request
+        const apiResponse = await new Promise((resolve, reject) => {
+            const reqApi = https.request(options, (resApi) => {
+                const chunks = [];
+                resApi.on('data', (chunk) => chunks.push(chunk));
+                resApi.on('end', () => resolve(Buffer.concat(chunks).toString()));
+                resApi.on('error', (err) => reject(err));
+            });
+            reqApi.end();
         });
 
-        // Process the complete response
-        apiRes.on('end', () => {
-            try {
-                const parsedData = JSON.parse(data);
+        // Parse the Zillow API response
+        const apiData = JSON.parse(apiResponse);
 
-                if (apiRes.statusCode === 200) {
-                    // Render the results page with data
-                    res.render('result', { data: parsedData, error: null });
-                } else {
-                    // Handle API error response
-                    res.render('result', { data: null, error: parsedData.message || 'API Error' });
-                }
-            } catch (error) {
-                console.error('Error parsing response:', error.message);
-                res.render('result', { data: null, error: 'Invalid response from API' });
-            }
-        });
-    }).on('error', (error) => {
-        console.error('Request error:', error.message);
-        res.render('result', { data: null, error: 'Unable to connect to API' });
-    });
+        // Prepare the data for MongoDB insertion and rendering
+        const applicationData = {
+            address,
+            propertyType,
+            beds: beds || 'N/A',
+            baths: baths || 'N/A',
+            sqftMin: sqftMin || 'N/A',
+            sqftMax: sqftMax || 'N/A',
+            rentEstimate: apiData.rent || 'No Estimate Available', // Main rent field
+            medianRent: apiData.median || 'N/A',                  // Median rent (optional)
+            highRent: apiData.highRent || 'N/A',                  // High rent (optional)
+            lowRent: apiData.lowRent || 'N/A',                    // Low rent (optional)
+        };
+
+        // Insert the data into MongoDB
+        await client.db(dbAndCollection.db).collection(dbAndCollection.collection).insertOne(applicationData);
+
+        // Render the results page
+        res.render('results', { applicationData });
+    } catch (error) {
+        console.error('Error Details:', error.message); // Log detailed error
+        res.status(500).send(`An error occurred while processing your request: ${error.message}`);
+    } finally {
+        // Ensure MongoDB connection is closed
+        await client.close();
+    }
 });
