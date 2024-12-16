@@ -3,15 +3,13 @@ const express = require('express');
 const https = require('https');
 const app = express();
 const bodyParser = require('body-parser');
-// const portNumber = process.argv[2];
-const readline = require('readline');
+// const readline = require('readline');
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, 'credentials/.env') })
 app.use('/css', express.static(path.join(__dirname, 'css')));
 app.set("views", path.resolve(__dirname, 'pages'));
 
 const uri = process.env.MONGO_CONNECTION_STRING;
-//const uri = `mongodb+srv://${process.env.MONGO_DB_USERNAME}:${process.env.MONGO_DB_PASSWORD}@cluster0.t50t9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 const dbAndCollection = {db:process.env.MONGO_DB_NAME, collection:process.env.MONGO_COLLECTION};
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
@@ -25,34 +23,32 @@ app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
-// Setup readline interface for command line interpreter
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-  prompt: 'Stop to shutdown the server: '
-});
+// // Setup readline interface for command line interpreter
+// const rl = readline.createInterface({
+//   input: process.stdin,
+//   output: process.stdout,
+//   prompt: 'Stop to shutdown the server: '
+// });
 
-// Listen for user input
-rl.on('line', (input) => {
-    input = input.trim();
+// // Listen for user input
+// rl.on('line', (input) => {
+//     input = input.trim();
     
-    if (input === 'stop') {
-      console.log("Shutting down the server");
-      rl.close();
-      process.exit(0);
-    } else {
-      console.log(`Invalid command: ${input}`);
-    }
-});
+//     if (input === 'stop') {
+//       console.log("Shutting down the server");
+//       rl.close();
+//       process.exit(0);
+//     } else {
+//       console.log(`Invalid command: ${input}`);
+//     }
+// });
 
 app.get('/', (request, response) => {
     response.render("intro");
 });
 
 async function lookUpMany(client, databaseAndCollection) {
-  const cursor = client.db(databaseAndCollection.db)
-      .collection(databaseAndCollection.collection)
-      .find({});
+  const cursor = client.db(databaseAndCollection.db).collection(databaseAndCollection.collection).find({});
   return await cursor.toArray();
 }
 
@@ -96,9 +92,7 @@ app.post("/clearSearchHistory", async (request, response) => {
   const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
   try {
       await client.connect();
-      const result = await client.db(dbAndCollection.db)
-          .collection(dbAndCollection.collection)
-          .deleteMany({});
+      const result = await client.db(dbAndCollection.db).collection(dbAndCollection.collection).deleteMany({});
       const table = await createTable(client, dbAndCollection);
       response.render("searchHistory", { table: table });
   } catch (e) {
@@ -117,7 +111,7 @@ app.post('/processValue', async (req, res) => {
     const client = new MongoClient(uri, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        serverApi: ServerApiVersion.v1,
+        serverApi: ServerApiVersion.v1
     });
 
     const { address, propertyType, beds, baths, sqftMin, sqftMax } = req.body;
@@ -135,8 +129,8 @@ app.post('/processValue', async (req, res) => {
         path: path,
         headers: {
             'x-rapidapi-key': process.env.ZILLOW_API_KEY,
-            'x-rapidapi-host': 'zillow-com1.p.rapidapi.com',
-        },
+            'x-rapidapi-host': 'zillow-com1.p.rapidapi.com'
+        }
     };
 
     try {
@@ -165,10 +159,10 @@ app.post('/processValue', async (req, res) => {
             baths: baths || 'N/A',
             sqftMin: sqftMin || 'N/A',
             sqftMax: sqftMax || 'N/A',
-            rentEstimate: apiData.rent || 'No Estimate Available', // Main rent field
-            medianRent: apiData.median || 'N/A',                  // Median rent (optional)
-            highRent: apiData.highRent || 'N/A',                  // High rent (optional)
-            lowRent: apiData.lowRent || 'N/A',                    // Low rent (optional)
+            rentEstimate: apiData.rent || 'No Estimate Available',
+            medianRent: apiData.median || 'N/A',
+            highRent: apiData.highRent || 'N/A',
+            lowRent: apiData.lowRent || 'N/A'
         };
 
         // Insert the data into MongoDB
@@ -177,10 +171,9 @@ app.post('/processValue', async (req, res) => {
         // Render the results page
         res.render('results', { applicationData });
     } catch (error) {
-        console.error('Error Details:', error.message); // Log detailed error
+        console.error('Error Details:', error.message);
         res.status(500).send(`An error occurred while processing your request: ${error.message}`);
     } finally {
-        // Ensure MongoDB connection is closed
         await client.close();
     }
 });
